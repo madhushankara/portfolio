@@ -198,12 +198,13 @@ body:not(.light-mode) .moon-icon { display: none; }
     display: flex;
     align-items: center;
     justify-content: center;
-    width: fit-content;
+    width: 840px;
+    height: 840px;
 }
 .hero-circle {
     position: absolute;
-    width: 130%;
-    height: 130%;
+    width: 1260px;
+    height: 1260px;
     border-radius: 50%;
     background: #000000;
     z-index: 1;
@@ -493,6 +494,8 @@ footer { position: relative; padding: 3rem 0; text-align: center; border-top: 1p
     .cert-grid { grid-template-columns: 1fr; }
     .btn { width: 100%; margin-bottom: 0.5rem; text-align: center; }
     .cta-group { flex-direction: column; width: 100%; }
+    .hero-video-wrapper { width: 320px; height: 320px; margin: 0 auto; }
+    .hero-circle { width: 480px; height: 480px; }
     .hero-video-container { width: 100%; max-width: 320px; height: 320px; border-radius: 24px; margin: 0 auto; }
     .hero-video-container video { border-radius: 24px; }
 }
