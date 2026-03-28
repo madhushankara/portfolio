@@ -125,7 +125,24 @@ document.addEventListener("DOMContentLoaded", () => {
         setTimeout(heroType, sessionStorage.getItem('welcomePlayed') ? 1000 : 2500);
     }
 
-    // --- 6. Mindset Terminal Typeout ---
+    // --- 6. JS Intersection Observer for Scroll Animations ---
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry, i) => {
+            if (entry.isIntersecting) {
+                setTimeout(() => {
+                    entry.target.classList.add('visible');
+                }, entry.target.dataset.delay || 0);
+                observer.unobserve(entry.target);
+            }
+        });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('.scroll-animate, .slide-left, .slide-right, .pop-in').forEach((el, i) => {
+        el.dataset.delay = i % 6 * 80;
+        observer.observe(el);
+    });
+
+    // --- 7. Mindset Terminal Typeout ---
     const terminalEl = document.getElementById('mindset-terminal');
     if (terminalEl) {
         const mindsetConfig = `> loading personality.config...\n  curiosity:     ALWAYS_ON\n  learning:      CONTINUOUS\n  competition:   CHESS + LEETCODE (500d streak)\n  environment:   startup > enterprise\n  pace:          fast > comfortable\n  approach:      build -> break -> learn -> repeat\n  energy:        "how does this work?" x100/day\n> config loaded. ready to ship.`;
@@ -148,7 +165,7 @@ document.addEventListener("DOMContentLoaded", () => {
         mindsetObserver.observe(document.querySelector('.mindset-right'));
     }
 
-    // --- 7. Pure JS Canvas Particles (Global Background) ---
+    // --- 8. Pure JS Canvas Particles (Global Background) ---
     const canvas = document.getElementById('bg-canvas');
     if (canvas) {
         const ctx = canvas.getContext('2d');
@@ -196,7 +213,7 @@ document.addEventListener("DOMContentLoaded", () => {
         window.addEventListener('resize', initCanvas);
     }
 
-    // --- 8. Neon Cursor Trail ---
+    // --- 9. Neon Cursor Trail ---
     if (!('ontouchstart' in window)) {
         const dots = [];
         document.addEventListener('mousemove', (e) => {
