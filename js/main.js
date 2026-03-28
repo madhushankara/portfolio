@@ -189,7 +189,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // --- 7. Mindset Terminal Typeout ---
     const terminalEl = document.getElementById('mindset-terminal');
     if (terminalEl) {
-        const mindsetConfig = `> loading personality.config...\n  curiosity:     ALWAYS_ON\n  learning:      CONTINUOUS\n  competition:   CHESS + LEETCODE (500d streak)\n  environment:   startup > enterprise\n  pace:          fast > comfortable\n  approach:      build -> break -> learn -> repeat\n  energy:        "how does this work?" x100/day\n> config loaded. ready to ship.`;
+        const mindsetConfig = `> loading personality.config...\n  curiosity:     ALWAYS_ON\n  learning:      CONTINUOUS\n  competition:   CHESS + LEETCODE \n  environment:   startup > enterprise\n  pace:          fast > comfortable\n  approach:      build -> break -> learn -> repeat\n  energy:        how does this work? x100/day\n> config loaded. ready to ship.`;
         let terminalTyped = false;
         
         const mindsetObserver = new IntersectionObserver((entries) => {
