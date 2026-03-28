@@ -1,8 +1,9 @@
 document.addEventListener("DOMContentLoaded", () => {
-    // --- 1. Welcome Animation (Terminal & Pixel Dissolve) ---
+    // --- 1. Welcome Animation (Terminal) & Video Play Logic ---
     const welcomeScreen = document.getElementById('welcome-screen');
     const welcomeText = document.getElementById('welcome-text');
     
+    // Function to safely play the hero video
     const playHeroVideo = () => {
         const heroVideo = document.getElementById('hero-video');
         if (heroVideo) {
@@ -11,52 +12,19 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     };
 
-    function pixelDissolve(element, callback) {
-        const canvas = document.createElement('canvas');
-        const ctx = canvas.getContext('2d');
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-        canvas.style.cssText = `
-            position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            z-index: 9998;
-            pointer-events: none;
-        `;
-        document.body.appendChild(canvas);
-
-        const tileSize = window.innerWidth < 768 ? 8 : 12;
-        const cols = Math.ceil(canvas.width / tileSize);
-        const rows = Math.ceil(canvas.height / tileSize);
-        const tiles = [];
-        for (let r = 0; r < rows; r++) {
-            for (let c = 0; c < cols; c++) {
-                tiles.push({ x: c * tileSize, y: r * tileSize, alive: true });
-            }
-        }
-        tiles.sort(() => Math.random() - 0.5);
-
-        let dissolved = 0;
-        const total = tiles.length;
-        const batchSize = Math.ceil(total / 30);
-
-        ctx.fillStyle = '#0a0a0f';
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-        element.style.display = 'none';
-
-        const dissolveInterval = setInterval(() => {
-            for (let i = 0; i < batchSize; i++) {
-                if (dissolved >= total) break;
-                const tile = tiles[dissolved];
-                ctx.clearRect(tile.x, tile.y, tileSize, tileSize);
-                dissolved++;
-            }
-            if (dissolved >= total) {
-                clearInterval(dissolveInterval);
-                canvas.remove();
-                if (callback) callback();
-            }
-        }, 16);
+    // Handle the 10-second delay between video loops
+    const heroVideoEl = document.getElementById('hero-video');
+    if (heroVideoEl) {
+        // Force-remove native looping so the 'ended' event can actually fire
+        heroVideoEl.removeAttribute('loop');
+        heroVideoEl.loop = false;
+        
+        heroVideoEl.addEventListener('ended', () => {
+            setTimeout(() => {
+                heroVideoEl.currentTime = 0;
+                heroVideoEl.play().catch(e => console.log("Replay prevented:", e));
+            }, 10000); // 10000ms = 10 seconds
+        });
     }
 
     if (welcomeScreen && !sessionStorage.getItem('welcomePlayed')) {
@@ -81,7 +49,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     if (charIndex < text.length) {
                         p.textContent += text.charAt(charIndex);
                         charIndex++;
-                        setTimeout(typeChar, 30); // 30ms char typing
+                        setTimeout(typeChar, 30); // 30ms char typing speed
                     } else {
                         lineIndex++;
                         setTimeout(typeLine, 150); // 150ms line delay
@@ -90,11 +58,14 @@ document.addEventListener("DOMContentLoaded", () => {
                 typeChar();
             } else {
                 setTimeout(() => {
-                    pixelDissolve(welcomeScreen, () => {
-                        document.body.style.overflow = 'auto'; // ensure scroll is restored after fade
+                    welcomeScreen.style.opacity = '0';
+                    setTimeout(() => {
+                        welcomeScreen.style.display = 'none';
+                        document.body.style.overflow = 'auto';
                         sessionStorage.setItem('welcomePlayed', 'true');
+                        // Video starts playing EXACTLY here, after the screen is completely gone
                         playHeroVideo();
-                    });
+                    }, 400); // 400ms fade-out
                 }, 500);
             }
         }
@@ -103,6 +74,7 @@ document.addEventListener("DOMContentLoaded", () => {
         setTimeout(typeLine, 500);
     } else if (welcomeScreen) {
         welcomeScreen.style.display = 'none';
+        // Video starts playing immediately if animation is skipped
         playHeroVideo();
     }
 
@@ -169,7 +141,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // --- 6. JS Intersection Observer for Scroll Animations ---
-    const thresholdValue = window.innerWidth < 768 ? 0.08 : 0.1;
     const observer = new IntersectionObserver((entries) => {
         entries.forEach((entry, i) => {
             if (entry.isIntersecting) {
@@ -179,7 +150,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 observer.unobserve(entry.target);
             }
         });
-    }, { threshold: thresholdValue });
+    }, { threshold: 0.1 });
 
     document.querySelectorAll('.scroll-animate, .slide-left, .slide-right, .pop-in').forEach((el, i) => {
         el.dataset.delay = i % 6 * 80;
@@ -219,9 +190,8 @@ document.addEventListener("DOMContentLoaded", () => {
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
             particles = [];
-            const isMobile = window.innerWidth < 768;
-            const particleCount = isMobile ? 40 : 80;
-            for (let i = 0; i < particleCount; i++) {
+            const numParticles = Math.min(Math.floor(window.innerWidth / 15), 80);
+            for (let i = 0; i < numParticles; i++) {
                 particles.push({
                     x: Math.random() * canvas.width,
                     y: Math.random() * canvas.height,
@@ -282,6 +252,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 if (oldDot && oldDot.parentNode) oldDot.remove();
             }
 
+            // Trigger reflow & fade
             requestAnimationFrame(() => {
                 dot.style.transform = 'scale(0)';
                 dot.style.opacity = '0';
@@ -295,8 +266,6 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 });
-
-// --- 10. Horizontal Scroll Block Layers ---
 window.addEventListener('wheel', (e) => {
     if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) {
         e.preventDefault();
@@ -306,6 +275,8 @@ window.addEventListener('wheel', (e) => {
 window.addEventListener('touchmove', (e) => {
     if (e.touches.length === 1) {
         const touch = e.touches[0];
+        // Note: Using clientX/Y directly checks position relative to viewport, not movement delta.
+        // But applying strictly as requested.
         if (Math.abs(touch.clientX) > Math.abs(touch.clientY)) {
             e.preventDefault();
         }
