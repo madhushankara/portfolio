@@ -75,14 +75,90 @@ section { position: relative; z-index: 1; }
 ::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 3px; }
 ::-webkit-scrollbar-thumb:hover { background: var(--accent); }
 
-/* Typography */
-h1, h2, h3, h4, .logo { font-family: var(--font-heading); }
-a { text-decoration: none; color: inherit; transition: all 0.4s ease; }
-ul { list-style: none; }
+/* Update Typography to include Fallbacks */
+h1, h2, h3, h4, .logo, .section-title, .subtitle { font-family: 'Orbitron', monospace, sans-serif; }
 
-.container { max-width: 1200px; margin: 0 auto; padding: 0 2rem; }
-.section { padding: 100px 0; }
-.mt-4 { margin-top: 1.5rem; }
+/* Section Container Rule */
+section { position: relative; z-index: 1; }
+
+/* Replace the broken section-title animation */
+.section-title { 
+    font-size: 2.5rem; 
+    margin-bottom: 3rem; 
+    color: var(--muted); 
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.7s ease-out, transform 0.7s ease-out;
+    position: relative;
+    z-index: 2;
+}
+.section-title.in-view {
+    opacity: 1;
+    transform: translateY(0);
+}
+.section-title span { color: var(--accent); text-shadow: var(--glow-primary); }
+
+/* Replace existing .hero-video-container and video styling completely */
+.hero-video-container {
+    position: relative;
+    width: 648px;
+    height: 648px;
+    border-radius: 36px;
+    padding: 3px;
+    background: radial-gradient(
+        ellipse at center,
+        rgba(0,0,0,0.95) 0%,
+        rgba(0,0,0,0.7) 40%,
+        rgba(0,0,0,0.2) 70%,
+        transparent 100%
+    );
+    /* Soft outer glow that fades to nothing */
+    box-shadow:
+        0 0 0 3px rgba(0,0,0,0.9),
+        0 0 12px 4px rgba(0,0,0,0.6),
+        0 0 30px 10px rgba(0,0,0,0.3),
+        0 0 60px 20px rgba(0,0,0,0.1);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.hero-video-container video {
+    width: 100%;
+    height: 100%;
+    border-radius: 32px;
+    display: block;
+    object-fit: cover;
+}
+
+/* Add contact profile image styling */
+.contact-profile {
+    display: flex;
+    justify-content: flex-start;
+    margin-bottom: 20px;
+    margin-top: 15px;
+}
+.contact-profile img {
+    width: 80px;
+    height: 96px;
+    object-fit: cover;
+    object-position: top center;
+    border-radius: 50%;
+    transform: scaleY(1.12);
+    border: 2px solid var(--accent);
+    box-shadow: 0 0 12px rgba(0, 240, 255, 0.3);
+}
+
+/* Update Media Query for Hero Video scaling on Mobile */
+@media (max-width: 1024px) {
+    .hero-video-container { 
+        width: 100%; 
+        max-width: 480px; 
+        height: auto; 
+        aspect-ratio: 1 / 1; 
+        margin: 0 auto; 
+        display: block; 
+    }
+}
 
 /* Scroll Animations */
 .scroll-animate {
