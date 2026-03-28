@@ -12,6 +12,17 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     };
 
+    // Handle the 10-second delay between video loops
+    const heroVideoEl = document.getElementById('hero-video');
+    if (heroVideoEl) {
+        heroVideoEl.addEventListener('ended', () => {
+            setTimeout(() => {
+                heroVideoEl.currentTime = 0;
+                heroVideoEl.play().catch(e => console.log("Replay prevented:", e));
+            }, 10000); // 10000ms = 10 seconds
+        });
+    }
+
     if (welcomeScreen && !sessionStorage.getItem('welcomePlayed')) {
         const lines = [
             "> initializing madhu.exe...",
