@@ -1,9 +1,17 @@
 document.addEventListener("DOMContentLoaded", () => {
-    // --- 1. Welcome Animation (Terminal) ---
+// --- 1. Welcome Animation (Terminal) & Video Play Logic ---
     const welcomeScreen = document.getElementById('welcome-screen');
     const welcomeText = document.getElementById('welcome-text');
     
-    // Only elements present on the page will execute
+    // Function to safely play the hero video
+    const playHeroVideo = () => {
+        const heroVideo = document.getElementById('hero-video');
+        if (heroVideo) {
+            heroVideo.currentTime = 0;
+            heroVideo.play().catch(e => console.log("Autoplay prevented:", e));
+        }
+    };
+
     if (welcomeScreen && !sessionStorage.getItem('welcomePlayed')) {
         const lines = [
             "> initializing madhu.exe...",
@@ -40,6 +48,8 @@ document.addEventListener("DOMContentLoaded", () => {
                         welcomeScreen.style.display = 'none';
                         document.body.style.overflow = 'auto';
                         sessionStorage.setItem('welcomePlayed', 'true');
+                        // Video starts playing EXACTLY here, after the screen is completely gone
+                        playHeroVideo();
                     }, 400); // 400ms fade-out
                 }, 500);
             }
@@ -49,6 +59,8 @@ document.addEventListener("DOMContentLoaded", () => {
         setTimeout(typeLine, 500);
     } else if (welcomeScreen) {
         welcomeScreen.style.display = 'none';
+        // Video starts playing immediately if animation is skipped
+        playHeroVideo();
     }
 
     // --- 2. Dark/Light Mode Toggle ---
