@@ -251,3 +251,19 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 });
+window.addEventListener('wheel', (e) => {
+    if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) {
+        e.preventDefault();
+    }
+}, { passive: false });
+
+window.addEventListener('touchmove', (e) => {
+    if (e.touches.length === 1) {
+        const touch = e.touches[0];
+        // Note: Using clientX/Y directly checks position relative to viewport, not movement delta.
+        // But applying strictly as requested.
+        if (Math.abs(touch.clientX) > Math.abs(touch.clientY)) {
+            e.preventDefault();
+        }
+    }
+}, { passive: false });
