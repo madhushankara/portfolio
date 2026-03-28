@@ -15,6 +15,10 @@ document.addEventListener("DOMContentLoaded", () => {
     // Handle the 10-second delay between video loops
     const heroVideoEl = document.getElementById('hero-video');
     if (heroVideoEl) {
+        // Force-remove native looping so the 'ended' event can actually fire
+        heroVideoEl.removeAttribute('loop');
+        heroVideoEl.loop = false;
+        
         heroVideoEl.addEventListener('ended', () => {
             setTimeout(() => {
                 heroVideoEl.currentTime = 0;
