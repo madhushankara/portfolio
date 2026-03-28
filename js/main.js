@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", () => {
-// --- 1. Welcome Animation (Terminal) & Video Play Logic ---
+    // --- 1. Welcome Animation (Terminal) & Video Play Logic ---
     const welcomeScreen = document.getElementById('welcome-screen');
     const welcomeText = document.getElementById('welcome-text');
     
@@ -76,19 +76,11 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // --- 3. Scroll Progress Bar & Nav Highlight ---
-    const scrollBar = document.getElementById('scroll-bar');
+    // --- 3. Nav Highlight on Scroll ---
     const sections = document.querySelectorAll('section');
     const navItems = document.querySelectorAll('.nav-links a');
 
     window.addEventListener('scroll', () => {
-        if (scrollBar) {
-            const scrollPx = document.documentElement.scrollTop || document.body.scrollTop;
-            const winHeightPx = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-            const scrolled = (scrollPx / winHeightPx) * 100;
-            scrollBar.style.width = `${scrolled}%`;
-        }
-
         let current = '';
         sections.forEach(section => {
             if (pageYOffset >= (section.offsetTop - 250)) {
@@ -133,24 +125,7 @@ document.addEventListener("DOMContentLoaded", () => {
         setTimeout(heroType, sessionStorage.getItem('welcomePlayed') ? 1000 : 2500);
     }
 
-    // --- 6. Intersection Observers (Scroll Animations & Staggers) ---
-    // Apply stagger transition delays programmatically
-    document.querySelectorAll('.stagger-projects').forEach((el, i) => el.style.transitionDelay = `${i * 100}ms`);
-    document.querySelectorAll('.stagger-tags .tech-tag').forEach((el, i) => el.style.transitionDelay = `${i * 20}ms`);
-    document.querySelectorAll('.stagger-certs').forEach((el, i) => el.style.transitionDelay = `${i * 80}ms`);
-
-    const scrollObserver = new IntersectionObserver((entries, obs) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.classList.add('in-view');
-                obs.unobserve(entry.target);
-            }
-        });
-    }, { threshold: 0.1 });
-
-    document.querySelectorAll('.scroll-animate, .section-title').forEach(el => scrollObserver.observe(el));
-
-    // --- 7. Mindset Terminal Typeout ---
+    // --- 6. Mindset Terminal Typeout ---
     const terminalEl = document.getElementById('mindset-terminal');
     if (terminalEl) {
         const mindsetConfig = `> loading personality.config...\n  curiosity:     ALWAYS_ON\n  learning:      CONTINUOUS\n  competition:   CHESS + LEETCODE (500d streak)\n  environment:   startup > enterprise\n  pace:          fast > comfortable\n  approach:      build -> break -> learn -> repeat\n  energy:        "how does this work?" x100/day\n> config loaded. ready to ship.`;
@@ -173,7 +148,7 @@ document.addEventListener("DOMContentLoaded", () => {
         mindsetObserver.observe(document.querySelector('.mindset-right'));
     }
 
-    // --- 8. Pure JS Canvas Particles (Global Background) ---
+    // --- 7. Pure JS Canvas Particles (Global Background) ---
     const canvas = document.getElementById('bg-canvas');
     if (canvas) {
         const ctx = canvas.getContext('2d');
@@ -221,7 +196,7 @@ document.addEventListener("DOMContentLoaded", () => {
         window.addEventListener('resize', initCanvas);
     }
 
-    // --- 9. Neon Cursor Trail ---
+    // --- 8. Neon Cursor Trail ---
     if (!('ontouchstart' in window)) {
         const dots = [];
         document.addEventListener('mousemove', (e) => {
